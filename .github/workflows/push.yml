@@ -37,5 +37,10 @@ jobs:
       # Generate CLASP_TOKEN with:
       # npx clasp login --no-localhost
       # Then copy ~/.clasprc.json and paste its full JSON contents into the GitHub secret.
+      - name: Write clasp project config
+        run: printf '{"scriptId":"%s","rootDir":"."}' "$CLASP_SCRIPT_ID" > .clasp.json
+        env:
+          CLASP_SCRIPT_ID: ${{ secrets.CLASP_SCRIPT_ID }}
+
       - name: Push Apps Script project
         run: npm run push
