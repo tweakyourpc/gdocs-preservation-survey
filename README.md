@@ -1,211 +1,57 @@
-# Google Docs Photo Report
+# gdocs-preservation-survey
 
-[![License](https://img.shields.io/github/license/tweakyourpc/gdocs-photo-report)](./LICENSE)
-[![Lint](https://img.shields.io/github/actions/workflow/status/tweakyourpc/gdocs-photo-report/lint.yml?branch=main&label=lint)](https://github.com/tweakyourpc/gdocs-photo-report/actions/workflows/lint.yml)
-[![Version](https://img.shields.io/github/v/release/tweakyourpc/gdocs-photo-report)](https://github.com/tweakyourpc/gdocs-photo-report/releases)
+Historic Preservation Field Survey is a Google Apps Script fork of `gdocs-photo-report` for deterministic SHPO-style field survey documentation in Google Docs. It uses a structured Google Sheet, controlled dropdown vocabularies, numbered Drive photos, and resumable Apps Script batches. No AI or LLM calls are used in v1.
 
-Google Apps Script for assembling photo-heavy engineering reports in Google Docs.
+## What It Does
 
-## Overview
-
-This project solves a simple but expensive reporting problem:
-
-- site photos are collected in Google Drive and named with report numbers such as `Image 12.jpg`
-- captions are typed in a Google Doc as lines such as `12 - Roof flashing at east elevation`
-- manually pairing each caption to the right image is repetitive, slow, and easy to get wrong
-
-Photo Report scans the document, matches caption numbers to image numbers, inserts the image above the matching caption, and keeps the workflow safe to rerun.
-
-## Quickstart
-
-1. Open your Google Doc and attach this Apps Script project.
-2. Add [Code.gs](Code.gs), [Sidebar.html](Sidebar.html), [Picker.html](Picker.html), and [appsscript.json](appsscript.json).
-3. Reload the document, then use `Photo Report` > `Set Image Folder` to choose the Drive folder that contains your numbered images.
-4. Type captions as plain text lines such as `12 - Roof flashing at east elevation`.
-5. Open `Photo Report` > `Open Sidebar`, then run `Insert Missing Images`.
-
-If the run pauses because of Apps Script time limits, click `RESUME` in the sidebar and continue from the same UI.
-
-## Features
-
-- Live Progress Sidebar: run the tool from a persistent Google Docs sidebar with visible progress, counters, status messages, and batch resume controls.
-- Visual Folder Selection: launch a dedicated Google Picker dialog to browse Drive folders visually.
-- Manual Folder Fallback: if Picker credentials are not configured, the same sidebar still accepts a Drive folder URL or raw folder ID.
-- Time-Guarded Batching: large reports are processed in resumable batches so the script stops cleanly before Apps Script execution limits become destructive.
-- Auto Resume Flow: normal batches continue automatically, and time-limit pauses expose a resume button without sending the user back to the menu.
-- Idempotent Image Markers: inserted images are tracked through alt text markers so repeated runs skip work that is already complete.
-- Deterministic Matching: duplicate image-number collisions are resolved consistently and reported.
-- Diagnostic Logs: if a run fails, the script creates a Google Doc log with the relevant caption numbers, file IDs, and error details.
-
-## Screenshots
-
-Replace these placeholder graphics with real captures when you publish polished product shots.
-
-![Sidebar progress placeholder](docs/screenshots/sidebar-progress-placeholder.svg)
-
-![Picker dialog placeholder](docs/screenshots/picker-dialog-placeholder.svg)
-
-## How It Works
-
-1. Open the sidebar from the `Photo Report` menu in Google Docs.
-2. Use `Set Image Folder` or the sidebar picker button to choose the Drive folder that contains numbered project photos.
-3. Write plain-text caption lines in the body of the document, such as:
-
-```text
-1 - Front view of house
-2 - Roof overview
-3 - Rear elevation
-```
-
-4. Run `Insert Missing Images` or `Rebuild Images` from the sidebar.
-5. Watch progress in the sidebar while the script advances through batches.
-6. If Apps Script nears the execution limit, the sidebar pauses safely and resumes the next batch from the same UI.
-
-## Sidebar Workflow
-
-The sidebar is the main control surface for the project.
-
-- `Open Sidebar` opens the persistent control center.
-- `Set Image Folder` opens a dedicated Google Picker dialog for folder selection.
-- `Insert Missing Images` opens the sidebar and starts an insert run.
-- `Rebuild Images` opens the sidebar and starts a rebuild run.
-
-The progress panel shows:
-
-- processed captions versus total captions
-- inserted, removed, and remaining counts
-- duplicate folder-number warnings
-- missing image-number warnings
-- diagnostic log links for failed runs
-
-## Visual Folder Selection
-
-Folder selection supports two modes.
-
-### Google Picker Mode
-
-Use this when you want a visual Drive folder browser.
-
-1. Attach the Apps Script project to a standard Google Cloud project.
-2. Enable the Google Picker API for that Cloud project.
-3. Create a Picker API key restricted to `*.google.com` and `*.googleusercontent.com`.
-4. Open the sidebar and save the Picker API key plus Cloud project number in the Picker Settings panel.
-5. Use `Photo Report` > `Set Image Folder` or the sidebar picker button to open the native folder picker dialog.
-
-Picker credentials are stored in `UserProperties`, which means one engineer can reuse the same credentials across multiple report documents without committing secrets into the repo.
-
-If you want repo-level defaults for your own hosted copy, you can also set:
-
-- `PHOTO_REPORT_CONFIG.defaultPickerDeveloperKey`
-- `PHOTO_REPORT_CONFIG.defaultPickerCloudProjectNumber`
-
-in [Code.gs](Code.gs).
-
-### Manual Folder Mode
-
-If Picker is not configured, the project still works.
-
-- Paste a Drive folder URL, such as `https://drive.google.com/drive/folders/<id>`
-- Or paste a raw folder ID directly
-
-The script validates and stores the folder for the current document.
-
-## Important Input Rules
-
-- Use plain text captions, not Google Docs auto-numbered lists.
-- Use one caption per paragraph in the main document body.
-- Format captions like `1 - Caption text`, `2: Caption text`, or `3) Caption text`.
-- Keep image numbers aligned with caption numbers.
-- Use a dedicated staging folder for each report run so numbering stays predictable.
-
-Apps Script can read the literal text `1 - Front view of house`, but it does not reliably expose rendered list numbering from Google Docs auto-numbered lists.
-
-## Naming Conventions And Gotchas
-
-- The script uses the last number in each filename, so `Site Visit 2026-03-12 Image 7.jpg` will match caption `7`, not `12`.
-- If your team includes dates or revision numbers in filenames, prefer explicit names like `Image 7.jpg` or `Photo 7 - Roof.jpg`.
-- Duplicate caption numbers stop the run before any changes are made.
-- Duplicate folder numbers do not stop the run, but the script chooses one match deterministically and reports the collision.
-- Captions inside tables, headers, footers, and footnotes are not scanned.
-- Diagnostic logs are created as standalone Google Docs so they can be reviewed or shared separately from the report.
+- Creates and manages a linked Survey Sheet with reference tabs and dropdown validation.
+- Generates formal resource descriptions into the Survey tab from lookup tables in `ReferenceData.gs`.
+- Inserts numbered photos and caption blocks into the active Google Doc.
+- Preserves resumable batching, LockService protection, document property run state, idempotency markers, and diagnostic log generation from the original project.
+- Exports KML placemarks and CSV survey summaries to the linked photo folder.
 
 ## Setup
 
-1. Create or open the Google Doc you use for reports.
-2. Open `Extensions` > `Apps Script`.
-3. Replace the default script contents with [Code.gs](Code.gs).
-4. Add [Sidebar.html](Sidebar.html) and [Picker.html](Picker.html) as HTML files in the Apps Script editor.
-5. Replace the manifest with [appsscript.json](appsscript.json).
-6. Save the Apps Script project and reload the Google Doc.
-7. Use `Photo Report` > `Set Image Folder` to open the native folder picker, or open `Photo Report` > `Open Sidebar` and use the manual folder field.
-8. Start `Insert Missing Images` or `Rebuild Images` from the sidebar.
+1. Open the Google Doc that will become the survey report.
+2. Open `Extensions > Apps Script`.
+3. Add these files to the Apps Script project: `Code.gs`, `ReferenceData.gs`, `AssemblyEngine.gs`, `SheetSetup.gs`, `KmlExport.gs`, `Sidebar.html`, `Picker.html`, and `appsscript.json`.
+4. Save the script project and reload the Google Doc.
+5. Open `Preservation Survey > Open Sidebar`.
+6. Link or create a Survey Sheet.
+7. Run `Initialize Sheet` to create the Survey tab, reference tabs, named ranges, dropdowns, and the Unmatched log.
+8. Link the Drive photo folder that contains numbered files such as `Photo 1.jpg` or `Image 1.jpg`.
+9. Fill out Survey rows and run `Generate Descriptions`, then `Insert Missing` or `Rebuild All`.
 
-## Matching Behavior
+## Survey Workflow
 
-- The script looks for the last number in each image filename.
-- `Image 12.jpg` matches caption `12 - ...`.
-- If the same caption number appears more than once in the document, the run stops before making changes.
-- If multiple files map to the same number, the script keeps one deterministic match and reports the duplicate number.
-- If a caption number has no matching image, that number is listed in the progress summary.
-- Re-running `Insert Missing Images` is safe because already-managed images are recognized and skipped.
+The Survey tab is the working surface. Surveyors fill columns A through AP. Column AQ is script-written and protected with a warning. Most fields use dropdowns populated from the reference tabs; optional freetext is limited to notes, identifiers, names, dates, and coordinates.
 
-## Diagnostic Logs
+`Generate Descriptions` reads Survey rows, resolves lookup values, logs unmatched values to the Unmatched tab, and writes deterministic formal descriptions to AQ. `Insert Missing` matches `Photo #` to the last number in each image filename and appends managed report blocks to the Doc. `Rebuild All` first removes prior managed survey blocks, then reinserts from the Sheet.
 
-When a run fails, the script creates a temporary Google Doc that records:
+If Apps Script approaches execution limits, the run state is stored in DocumentProperties and the sidebar exposes Resume. Normal soft-batch pauses continue automatically from the sidebar.
 
-- the report action that failed
-- the source report document
-- the configured Drive folder
-- any caption numbers that were involved
-- the exact Drive file IDs and file names tied to insertion errors
+## Survey Columns
 
-The sidebar links directly to the diagnostic log so the operator can inspect or share it.
+A `Photo #`; B `Street Address`; C `City`; D `State`; E `Parcel ID / Feature ID`; F `Resource Type`; G `Use - Historic`; H `Use - Current`; I `Architectural Style (Primary)`; J `Architectural Style (Secondary)`; K `Stories`; L `Roof Form`; M `Roof Material`; N `Primary Cladding`; O `Secondary Cladding`; P `Foundation Type`; Q `Window Type`; R `Window Material`; S `Door Type`; T `Porch Type`; U-X `Finding 1-4`; Y `Integrity - Overall`; Z-AF seven NR integrity aspects; AG `NR Criteria`; AH `Period of Significance`; AI `Date of Construction`; AJ `Architect / Builder`; AK `GPS Lat`; AL `GPS Lon`; AM `Recorder`; AN `Survey Date`; AO `Surveyor Notes`; AP `Status`; AQ `Generated Description`.
+
+Rows with Status `Skip` are omitted from Doc insertion and KML export.
+
+## Project Info
+
+Use `Preservation Survey > Setup > Set Project Info` to store project metadata in DocumentProperties under `PRES_PROJECT_INFO`. The report cover block is inserted once and tracked by a managed marker.
+
+## KML Export
+
+`Preservation Survey > Export > Export KML to Drive` reads rows with decimal GPS latitude and longitude, excludes skipped rows, and writes one KML placemark per resource to the linked photo folder. Each placemark includes the AQ description and metadata in a CDATA block.
+
+## Reference Data
+
+`ReferenceData.gs` includes pre-populated arrays for architectural styles, materials, roof forms, window types, door types, porch types, findings, integrity aspects, periods, resource types, use types, foundations, and U.S. jurisdictions. The Sheet setup process writes these into reference tabs only when a tab is blank beyond its header, so local SHPO customizations are preserved on repeated initialization.
+
+## V1 Boundaries
+
+This version does not implement AI generation, photo analysis, real-time GPS mapping, PDF export, email notifications, multi-user conflict resolution beyond LockService, or Gemini Vision. Those are planned v2 candidates only.
 
 ## OAuth Scopes
 
-The manifest intentionally stays small:
-
-- `https://www.googleapis.com/auth/documents`: required to read the active report, insert images, and create diagnostic docs.
-- `https://www.googleapis.com/auth/drive.readonly`: required to browse the source folder, inspect image files, and fetch image blobs without requesting write access to Drive.
-- `https://www.googleapis.com/auth/script.container.ui`: required for the Google Docs menu, sidebar, and Picker dialog UI.
-
-## Development
-
-The repo includes:
-
-- [eslint.config.mjs](eslint.config.mjs) with Google JavaScript style enforcement for `Code.gs`
-- [lint.yml](.github/workflows/lint.yml) for GitHub Actions linting on pushes and pull requests
-- [clasp-push.yml](.github/workflows/clasp-push.yml) for production deployment on `main`
-- GitHub issue templates for bug reports and feature requests
-- an OpenGraph art brief in [docs/og-image-brief.md](docs/og-image-brief.md)
-
-### Local Tooling
-
-```bash
-npm install
-npm test
-```
-
-### GitHub Actions Deployment
-
-The production `clasp` workflow expects these GitHub secrets:
-
-- `CLASP_CREDENTIALS_JSON`
-- `CLASP_SCRIPT_ID`
-
-The workflow writes an ephemeral `.clasp.json` during CI and pushes the Apps Script project only from `main`.
-
-## Repository Layout
-
-- [Code.gs](Code.gs): Apps Script runtime, batching engine, diagnostics, and Drive matching logic
-- [Sidebar.html](Sidebar.html): sidebar UI, progress updates, console log, and resume controls
-- [Picker.html](Picker.html): Google Picker dialog for native Drive folder selection
-- [appsscript.json](appsscript.json): Apps Script manifest and OAuth scopes
-- [CHANGELOG.md](CHANGELOG.md): release notes and notable project changes
-- [LICENSE](LICENSE): MIT license
-
-## Limits and Notes
-
-- Captions inside tables, headers, footers, and footnotes are not scanned.
-- The script is designed for Google Drive storage.
-- Apps Script executions are capped at 6 minutes, so large reports are intentionally split into resumable batches.
+The manifest requests Google Docs, Drive, Spreadsheets, container UI, ScriptApp, and user email scopes because the tool edits the active document, creates and updates Sheets, reads and writes Drive exports, opens Picker UI, and uses ScriptApp OAuth tokens.

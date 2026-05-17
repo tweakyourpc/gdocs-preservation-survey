@@ -1,0 +1,8 @@
+README.md
+REFERENCE_SOURCES.md
+package.json
+package-lock.json
+.claspignore
+.gitignore
+node_modules/**
+.clasp.json

@@ -1,18 +1,14 @@
 {
-  "name": "gdocs-photo-report",
+  "name": "gdocs-preservation-survey",
   "version": "1.0.0",
   "private": true,
-  "description": "Support tooling for the Google Docs Photo Report Apps Script project.",
   "scripts": {
-    "lint": "eslint Code.gs",
-    "test": "npm run lint",
-    "clasp:push": "clasp push --force"
+    "push": "clasp push",
+    "pull": "clasp pull",
+    "open": "clasp open",
+    "logs": "clasp logs --watch"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.2.0",
-    "@google/clasp": "^2.4.2",
-    "eslint": "^8.57.1",
-    "eslint-config-google": "^0.14.0",
-    "globals": "^15.14.0"
+    "@google/clasp": "^2.4.2"
   }
 }

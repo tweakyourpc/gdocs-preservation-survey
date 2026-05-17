@@ -4,1037 +4,167 @@
     <base target="_top">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Photo Report Sidebar</title>
+    <title>Preservation Survey Sidebar</title>
     <style>
-      :root {
-        --bg: #08111d;
-        --panel: rgba(14, 22, 36, 0.92);
-        --panel-soft: rgba(20, 31, 49, 0.86);
-        --border: rgba(148, 163, 184, 0.18);
-        --text: #e5eefb;
-        --text-muted: #94a3b8;
-        --accent: #22c55e;
-        --accent-soft: rgba(34, 197, 94, 0.18);
-        --info: #38bdf8;
-        --warn: #f59e0b;
-        --danger: #fb7185;
-        --shadow: 0 24px 48px rgba(2, 6, 23, 0.48);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: "Google Sans", Roboto, Arial, sans-serif;
-        color: var(--text);
-        background:
-          radial-gradient(circle at top, rgba(34, 197, 94, 0.16), transparent 32%),
-          radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.16), transparent 28%),
-          linear-gradient(180deg, #09101c 0%, #0f1727 100%);
-      }
-
-      button,
-      input {
-        font: inherit;
-      }
-
-      a {
-        color: #7dd3fc;
-      }
-
-      .shell {
-        padding: 18px;
-      }
-
-      .stack {
-        display: grid;
-        gap: 14px;
-      }
-
-      .hero,
-      .panel,
-      details {
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        background: var(--panel);
-        box-shadow: var(--shadow);
-      }
-
-      .hero {
-        padding: 18px;
-        background:
-          linear-gradient(145deg, rgba(34, 197, 94, 0.12), rgba(15, 23, 42, 0.36)),
-          var(--panel);
-      }
-
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: rgba(34, 197, 94, 0.12);
-        color: #bbf7d0;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      h1 {
-        margin: 14px 0 8px;
-        font-size: 24px;
-        line-height: 1.08;
-      }
-
-      p {
-        margin: 0;
-        color: var(--text-muted);
-        line-height: 1.55;
-      }
-
-      .panel {
-        padding: 16px;
-      }
-
-      .panel h2 {
-        margin: 0 0 12px;
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        color: #cbd5e1;
-      }
-
-      .folder-card {
-        display: grid;
-        gap: 8px;
-      }
-
-      .folder-name {
-        font-size: 15px;
-        font-weight: 700;
-      }
-
-      .folder-meta,
-      .small {
-        color: var(--text-muted);
-        font-size: 12px;
-        word-break: break-word;
-      }
-
-      .controls {
-        display: grid;
-        gap: 10px;
-        margin-top: 14px;
-      }
-
-      .button-row {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      .button {
-        appearance: none;
-        border: 0;
-        border-radius: 999px;
-        padding: 11px 16px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
-      }
-
-      .button:hover:not(:disabled) {
-        transform: translateY(-1px);
-      }
-
-      .button:disabled {
-        opacity: 0.55;
-        cursor: wait;
-        transform: none;
-      }
-
-      .button.primary {
-        color: #052e16;
-        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-        box-shadow: 0 18px 30px rgba(34, 197, 94, 0.22);
-      }
-
-      .button.info {
-        color: #082f49;
-        background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-        box-shadow: 0 16px 28px rgba(56, 189, 248, 0.2);
-      }
-
-      .button.warn {
-        color: #422006;
-        background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%);
-        box-shadow: 0 16px 28px rgba(245, 158, 11, 0.22);
-      }
-
-      .button.secondary {
-        color: #e2e8f0;
-        background: rgba(30, 41, 59, 0.88);
-        border: 1px solid rgba(148, 163, 184, 0.16);
-      }
-
-      .button.ghost {
-        color: #cbd5e1;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(148, 163, 184, 0.16);
-      }
-
-      .button.resume {
-        color: #220a13;
-        background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%);
-        box-shadow: 0 18px 32px rgba(244, 63, 94, 0.24);
-      }
-
-      .control-input {
-        width: 100%;
-        padding: 12px 14px;
-        border: 1px solid rgba(148, 163, 184, 0.24);
-        border-radius: 12px;
-        background: rgba(15, 23, 42, 0.72);
-        color: var(--text);
-      }
-
-      .control-input::placeholder {
-        color: #64748b;
-      }
-
-      .pill-row {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: rgba(148, 163, 184, 0.12);
-        color: #dbeafe;
-        font-size: 12px;
-        font-weight: 600;
-      }
-
-      .pill.good {
-        background: rgba(34, 197, 94, 0.18);
-        color: #bbf7d0;
-      }
-
-      .pill.warn {
-        background: rgba(245, 158, 11, 0.16);
-        color: #fcd34d;
-      }
-
-      .pill.info {
-        background: rgba(56, 189, 248, 0.18);
-        color: #bae6fd;
-      }
-
-      .progress-shell {
-        display: grid;
-        gap: 10px;
-      }
-
-      .progress-bar {
-        position: relative;
-        height: 14px;
-        overflow: hidden;
-        border-radius: 999px;
-        background: rgba(148, 163, 184, 0.12);
-      }
-
-      .progress-fill {
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: 0%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, #22c55e 0%, #67e8f9 100%);
-        box-shadow: 0 12px 28px rgba(34, 197, 94, 0.28);
-        transition: width 220ms ease;
-      }
-
-      .progress-fill.indeterminate {
-        width: 38%;
-        background: linear-gradient(90deg, #38bdf8 0%, #22c55e 100%);
-        animation: slide 1.35s ease-in-out infinite;
-      }
-
-      .progress-meta {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        color: var(--text-muted);
-        font-size: 12px;
-      }
-
-      .metrics {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 14px;
-      }
-
-      .metric {
-        padding: 12px;
-        border-radius: 14px;
-        background: rgba(15, 23, 42, 0.68);
-        border: 1px solid rgba(148, 163, 184, 0.12);
-      }
-
-      .metric-label {
-        display: block;
-        font-size: 11px;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-      }
-
-      .metric-value {
-        display: block;
-        margin-top: 6px;
-        font-size: 22px;
-        font-weight: 700;
-      }
-
-      .status-box {
-        margin-top: 14px;
-        padding: 14px;
-        border-radius: 14px;
-        background: rgba(15, 23, 42, 0.78);
-        border: 1px solid rgba(148, 163, 184, 0.14);
-      }
-
-      .status-title {
-        margin-bottom: 6px;
-        color: var(--text-muted);
-        font-size: 12px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-      }
-
-      .status-message {
-        line-height: 1.6;
-      }
-
-      .status-message.warn {
-        color: #fde68a;
-      }
-
-      .status-message.error {
-        color: #fecdd3;
-      }
-
-      .console-shell {
-        min-height: 176px;
-        max-height: 260px;
-        overflow: auto;
-        padding: 12px;
-        border-radius: 14px;
-        border: 1px solid rgba(148, 163, 184, 0.16);
-        background: linear-gradient(180deg, rgba(3, 7, 18, 0.92), rgba(15, 23, 42, 0.94));
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 12px;
-        line-height: 1.6;
-        color: #d7e8ff;
-        white-space: pre-wrap;
-      }
-
-      .console-line + .console-line {
-        margin-top: 6px;
-      }
-
-      .diagnostic-list {
-        margin: 0;
-        padding-left: 18px;
-        color: var(--text-muted);
-      }
-
-      .diagnostic-list li + li {
-        margin-top: 8px;
-      }
-
-      details {
-        background: rgba(255, 255, 255, 0.03);
-      }
-
-      summary {
-        padding: 14px 16px;
-        cursor: pointer;
-        list-style: none;
-        font-weight: 700;
-      }
-
-      summary::-webkit-details-marker {
-        display: none;
-      }
-
-      .details-body {
-        padding: 0 16px 16px;
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      @keyframes slide {
-        0% {
-          transform: translateX(-120%);
-        }
-
-        50% {
-          transform: translateX(115%);
-        }
-
-        100% {
-          transform: translateX(115%);
-        }
-      }
+      :root { --bg: #172016; --panel: #f6f2e8; --panel-soft: #fffdf8; --border: #c8bfae; --text: #1f2a22; --muted: #697064; --accent: #2f6f4e; --info: #2b5c7a; --warn: #9a6400; --danger: #a3262a; --good: #1f6b3a; }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; font-family: Georgia, "Times New Roman", serif; color: var(--text); background: linear-gradient(180deg, #233426 0%, #121a13 100%); }
+      button, input { font: inherit; }
+      a { color: var(--info); }
+      .shell { padding: 16px; }
+      .stack { display: grid; gap: 12px; }
+      .hero, .panel, details { border: 1px solid var(--border); border-radius: 8px; background: var(--panel); box-shadow: 0 16px 32px rgba(0,0,0,.22); }
+      .hero, .panel { padding: 15px; }
+      .eyebrow { color: var(--accent); font: 700 11px Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+      h1 { margin: 10px 0 6px; font-size: 24px; line-height: 1.1; }
+      h2 { margin: 0 0 10px; font: 700 12px Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #4b564d; }
+      p { margin: 0; color: var(--muted); line-height: 1.5; }
+      .record { display: grid; gap: 5px; padding: 10px; border: 1px solid var(--border); background: var(--panel-soft); }
+      .record strong { font-size: 14px; }
+      .meta, .small { color: var(--muted); font-size: 12px; word-break: break-word; }
+      .controls { display: grid; gap: 9px; margin-top: 10px; }
+      .row { display: flex; gap: 8px; flex-wrap: wrap; }
+      .button { border: 0; border-radius: 6px; padding: 10px 13px; font-weight: 700; cursor: pointer; }
+      .button:disabled { opacity: .55; cursor: wait; }
+      .primary { color: #fff; background: var(--accent); }
+      .info { color: #fff; background: var(--info); }
+      .warn { color: #241700; background: #d9a441; }
+      .secondary { color: var(--text); background: #e7e0d2; border: 1px solid var(--border); }
+      .ghost { color: var(--text); background: transparent; border: 1px solid var(--border); }
+      .resume { color: #fff; background: var(--danger); }
+      .input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; background: #fffdf8; color: var(--text); }
+      .pill-row { display: flex; gap: 7px; flex-wrap: wrap; }
+      .pill { display: inline-flex; padding: 5px 8px; border-radius: 999px; background: #e4dece; color: var(--text); font: 700 11px Arial, sans-serif; }
+      .pill.good { color: var(--good); } .pill.warn { color: var(--warn); } .pill.info { color: var(--info); }
+      .progress-bar { position: relative; height: 12px; overflow: hidden; border-radius: 999px; background: #ddd4c2; }
+      .progress-fill { position: absolute; inset: 0 auto 0 0; width: 0%; border-radius: inherit; background: var(--accent); transition: width 200ms ease; }
+      .progress-fill.indeterminate { width: 38%; animation: slide 1.35s ease-in-out infinite; }
+      .progress-meta { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; margin-top: 8px; }
+      .metrics { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin-top: 12px; }
+      .metric { padding: 10px; border: 1px solid var(--border); background: var(--panel-soft); }
+      .metric-label { display: block; font: 700 10px Arial, sans-serif; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+      .metric-value { display: block; margin-top: 4px; font-size: 22px; font-weight: 700; }
+      .status { margin-top: 12px; padding: 12px; border: 1px solid var(--border); background: var(--panel-soft); line-height: 1.5; }
+      .status.warn { color: var(--warn); } .status.error { color: var(--danger); }
+      .console { min-height: 150px; max-height: 250px; overflow: auto; padding: 10px; border: 1px solid var(--border); background: #171d16; color: #eef2e7; font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; }
+      details { background: var(--panel); }
+      summary { padding: 13px 15px; cursor: pointer; font-weight: 700; }
+      .details-body { padding: 0 15px 15px; }
+      .hidden { display: none !important; }
+      @keyframes slide { 0% { transform: translateX(-120%); } 50%, 100% { transform: translateX(115%); } }
     </style>
   </head>
   <body>
-    <div class="shell">
-      <div class="stack">
-        <section class="hero">
-          <div class="eyebrow">Engineering Report Automation</div>
-          <h1>Photo Report Control Center</h1>
-          <p>
-            Use the sidebar to run batches, watch progress, and recover from long executions without
-            falling back to alert boxes or the top menu.
-          </p>
-        </section>
-
-        <section class="panel">
-          <h2>Folder</h2>
-          <div class="folder-card">
-            <div class="folder-name" id="folder-name">No folder selected</div>
-            <div class="folder-meta" id="folder-meta">Choose a Drive folder before starting a run.</div>
-            <div class="pill-row" id="folder-pills"></div>
-          </div>
-          <div class="controls">
-            <div class="button-row">
-              <button class="button info" id="pick-folder-button" type="button">Open Drive Folder Picker</button>
-              <button class="button ghost" id="refresh-button" type="button">Refresh Status</button>
-            </div>
-            <input
-              class="control-input"
-              id="manual-folder-input"
-              type="text"
-              placeholder="Paste a Drive folder URL or raw folder ID if Picker is unavailable"
-            >
-            <div class="button-row">
-              <button class="button secondary" id="save-folder-button" type="button">Save Folder URL or ID</button>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>Run Control</h2>
-          <div class="button-row">
-            <button class="button primary" id="insert-button" type="button">Insert Missing Images</button>
-            <button class="button warn" id="rebuild-button" type="button">Rebuild Images</button>
-          </div>
-          <div class="button-row" style="margin-top: 10px;">
-            <button class="button resume hidden" id="resume-button" type="button">RESUME</button>
-            <button class="button ghost hidden" id="clear-run-button" type="button">Clear Status</button>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>Live Progress</h2>
-          <div class="progress-shell">
-            <div class="progress-bar" aria-hidden="true">
-              <div class="progress-fill" id="progress-fill"></div>
-            </div>
-            <div class="progress-meta">
-              <span id="progress-label">Ready</span>
-              <span id="progress-percent">0%</span>
-            </div>
-          </div>
-          <div class="metrics">
-            <div class="metric">
-              <span class="metric-label">Processed</span>
-              <span class="metric-value" id="metric-processed">0</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Remaining</span>
-              <span class="metric-value" id="metric-remaining">0</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Inserted</span>
-              <span class="metric-value" id="metric-inserted">0</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Removed</span>
-              <span class="metric-value" id="metric-removed">0</span>
-            </div>
-          </div>
-          <div class="status-box">
-            <div class="status-title">Current Status</div>
-            <div class="status-message" id="status-message">
-              Ready to choose a folder and start a report batch.
-            </div>
-          </div>
-          <div class="pill-row" id="run-pills" style="margin-top: 12px;"></div>
-          <div class="button-row hidden" id="diagnostic-row" style="margin-top: 12px;">
-            <a class="button secondary" id="diagnostic-link" target="_blank" rel="noopener noreferrer" href="#">
-              Open Diagnostic Log
-            </a>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>Console</h2>
-          <p class="small" style="margin-bottom: 12px;">
-            The sidebar polls the latest run state while the batch is active so you can see what the
-            script is doing without reopening the menu.
-          </p>
-          <div class="console-shell" id="console-log">[idle] Waiting for the next run.</div>
-        </section>
-
-        <details>
-          <summary>Picker Settings</summary>
-          <div class="details-body stack">
-            <p>
-              Save a Google Picker API key and Cloud project number to your user profile if you want the
-              native Drive folder chooser across multiple report documents.
-            </p>
-            <input
-              class="control-input"
-              id="picker-key-input"
-              type="text"
-              autocomplete="off"
-              placeholder="Google Picker API key"
-            >
-            <input
-              class="control-input"
-              id="picker-project-input"
-              type="text"
-              autocomplete="off"
-              placeholder="Google Cloud project number"
-            >
-            <div class="button-row">
-              <button class="button secondary" id="save-picker-button" type="button">Save Picker Credentials</button>
-              <button class="button ghost" id="clear-picker-button" type="button">Clear My Picker Credentials</button>
-            </div>
-          </div>
-        </details>
-
-        <details>
-          <summary>Diagnostics</summary>
-          <div class="details-body stack">
-            <p>
-              Fetch and permission issues are logged and the batch keeps moving. If the run fails outright,
-              the script creates a diagnostic Google Doc with file IDs and error details.
-            </p>
-            <ul class="diagnostic-list" id="error-list">
-              <li>No current errors.</li>
-            </ul>
-          </div>
-        </details>
-      </div>
-    </div>
-
+    <div class="shell"><div class="stack">
+      <section class="hero"><div class="eyebrow">Historic Preservation Field Survey</div><h1>Preservation Survey</h1><p>Manage the linked Sheet, photo folder, deterministic description pass, resumable image insertion, and field-data exports.</p></section>
+      <section class="panel"><h2>Linked Resources</h2><div class="stack">
+        <div class="record"><strong id="sheet-name">No survey Sheet linked</strong><span class="meta" id="sheet-meta">Link or create a Sheet before initializing tabs.</span><div class="pill-row" id="sheet-pills"></div></div>
+        <div class="controls"><div class="row"><button class="button info" id="pick-sheet-button" type="button">Pick Survey Sheet</button><button class="button secondary" id="create-sheet-button" type="button">Create Survey Sheet</button><button class="button primary" id="init-sheet-button" type="button">Initialize Sheet</button></div><input class="input" id="manual-sheet-input" type="text" placeholder="Paste a Google Sheet URL or raw Sheet ID"><button class="button secondary" id="save-sheet-button" type="button">Save Sheet URL or ID</button></div>
+        <div class="record"><strong id="folder-name">No photo folder linked</strong><span class="meta" id="folder-meta">Choose a Drive folder before inserting report blocks.</span><div class="pill-row" id="folder-pills"></div></div>
+        <div class="controls"><div class="row"><button class="button info" id="pick-folder-button" type="button">Pick Photo Folder</button><button class="button ghost" id="refresh-button" type="button">Refresh</button></div><input class="input" id="manual-folder-input" type="text" placeholder="Paste a Drive folder URL or raw folder ID"><button class="button secondary" id="save-folder-button" type="button">Save Folder URL or ID</button></div>
+      </div></section>
+      <section class="panel"><h2>Generate</h2><div class="row"><button class="button primary" id="describe-button" type="button">Generate Descriptions</button><button class="button info" id="insert-button" type="button">Insert Missing</button><button class="button warn" id="rebuild-button" type="button">Rebuild All</button></div><div class="row" style="margin-top:9px"><button class="button resume hidden" id="resume-button" type="button">RESUME</button><button class="button ghost hidden" id="clear-run-button" type="button">Clear Status</button></div></section>
+      <section class="panel"><h2>Progress</h2><div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div><div class="progress-meta"><span id="progress-label">Ready</span><span id="progress-percent">0%</span></div><div class="metrics"><div class="metric"><span class="metric-label">Processed</span><span class="metric-value" id="metric-processed">0</span></div><div class="metric"><span class="metric-label">Remaining</span><span class="metric-value" id="metric-remaining">0</span></div><div class="metric"><span class="metric-label">Descriptions</span><span class="metric-value" id="metric-described">0</span></div><div class="metric"><span class="metric-label">Inserted</span><span class="metric-value" id="metric-inserted">0</span></div></div><div class="status" id="status-message">Ready to link a survey Sheet and photo folder.</div><div class="pill-row" id="run-pills" style="margin-top:10px"></div><div class="row hidden" id="diagnostic-row" style="margin-top:10px"><a class="button secondary" id="diagnostic-link" target="_blank" rel="noopener noreferrer" href="#">Open Diagnostic Log</a></div></section>
+      <section class="panel"><h2>Console</h2><div class="console" id="console-log">[idle] Waiting for the next run.</div></section>
+      <details><summary>Picker Settings</summary><div class="details-body stack"><p>Save a Google Picker API key and Cloud project number to your user profile for visual Drive selection.</p><input class="input" id="picker-key-input" type="text" autocomplete="off" placeholder="Google Picker API key"><input class="input" id="picker-project-input" type="text" autocomplete="off" placeholder="Google Cloud project number"><div class="row"><button class="button secondary" id="save-picker-button" type="button">Save Picker Credentials</button><button class="button ghost" id="clear-picker-button" type="button">Clear My Picker Credentials</button></div></div></details>
+      <details><summary>Diagnostics</summary><div class="details-body"><ul id="error-list"><li>No current errors.</li></ul></div></details>
+    </div></div>
     <script>
       const bootstrap = <?!= bootstrapJson ?>;
       const POLL_INTERVAL_MS = 1200;
       const CONTINUE_DELAY_MS = 350;
-
       let sidebarState = bootstrap;
       let requestedAction = bootstrap.requestedAction || '';
       let autoContinueTimer = null;
       let pollTimer = null;
       let pollInFlight = false;
-
-      function initializeSidebar() {
-        bindEvents();
-        render();
-        refreshSidebarState();
-      }
-
+      function initializeSidebar() { bindEvents(); render(); refreshSidebarState(); }
       function bindEvents() {
         document.getElementById('pick-folder-button').addEventListener('click', chooseFolderWithPicker);
+        document.getElementById('pick-sheet-button').addEventListener('click', chooseSheetWithPicker);
+        document.getElementById('create-sheet-button').addEventListener('click', createSheet);
+        document.getElementById('init-sheet-button').addEventListener('click', initializeSheet);
         document.getElementById('save-folder-button').addEventListener('click', saveFolderInput);
+        document.getElementById('save-sheet-button').addEventListener('click', saveSheetInput);
         document.getElementById('save-picker-button').addEventListener('click', savePickerSettings);
         document.getElementById('clear-picker-button').addEventListener('click', clearPickerSettings);
-        document.getElementById('insert-button').addEventListener('click', function() {
-          startRun('insert');
-        });
-        document.getElementById('rebuild-button').addEventListener('click', function() {
-          startRun('rebuild');
-        });
+        document.getElementById('describe-button').addEventListener('click', function(){ startRun('describe'); });
+        document.getElementById('insert-button').addEventListener('click', function(){ startRun('insert'); });
+        document.getElementById('rebuild-button').addEventListener('click', function(){ startRun('rebuild'); });
         document.getElementById('resume-button').addEventListener('click', resumeRun);
         document.getElementById('clear-run-button').addEventListener('click', clearRunStatus);
         document.getElementById('refresh-button').addEventListener('click', refreshSidebarState);
       }
-
-      function render() {
-        renderFolder();
-        renderPickerSettings();
-        renderRunState();
-        renderConsole();
-        renderDiagnostics();
-        schedulePoll();
-      }
-
-      function renderFolder() {
-        const folder = sidebarState.folder;
-        const folderName = document.getElementById('folder-name');
-        const folderMeta = document.getElementById('folder-meta');
-        const folderPills = document.getElementById('folder-pills');
+      function render() { renderResources(); renderPickerSettings(); renderRunState(); renderConsole(); renderDiagnostics(); schedulePoll(); }
+      function renderResources() {
+        renderRecord('sheet', sidebarState.sheet, 'Sheet required', 'Survey Sheet ready');
+        renderRecord('folder', sidebarState.folder, 'Folder required', 'Photo folder ready');
         const pickerConfigured = Boolean(sidebarState.picker && sidebarState.picker.configured);
-
-        folderPills.innerHTML = '';
-
-        if (!folder || !folder.id) {
-          folderName.textContent = 'No folder selected';
-          folderMeta.textContent = 'Choose a Drive folder before starting a run.';
-          appendPill(folderPills, 'Folder required', 'warn');
-        } else {
-          folderName.textContent = folder.name;
-          folderMeta.textContent = folder.id;
-          appendPill(
-              folderPills,
-              folder.invalid ? 'Folder unavailable' : 'Folder ready',
-              folder.invalid ? 'warn' : 'good',
-          );
-        }
-
-        appendPill(
-            folderPills,
-            pickerConfigured ? 'Native picker ready' : 'Manual folder entry active',
-            pickerConfigured ? 'info' : 'warn',
-        );
+        appendPill(document.getElementById('sheet-pills'), pickerConfigured ? 'Picker ready' : 'Manual entry active', pickerConfigured ? 'info' : 'warn');
+        appendPill(document.getElementById('folder-pills'), pickerConfigured ? 'Picker ready' : 'Manual entry active', pickerConfigured ? 'info' : 'warn');
       }
-
+      function renderRecord(prefix, record, missingText, readyText) {
+        const name = document.getElementById(prefix + '-name');
+        const meta = document.getElementById(prefix + '-meta');
+        const pills = document.getElementById(prefix + '-pills');
+        pills.innerHTML = '';
+        if (!record || !record.id) { name.textContent = prefix === 'sheet' ? 'No survey Sheet linked' : 'No photo folder linked'; meta.textContent = missingText; appendPill(pills, missingText, 'warn'); return; }
+        name.textContent = record.name;
+        meta.textContent = record.id;
+        appendPill(pills, record.invalid ? 'Unavailable' : readyText, record.invalid ? 'warn' : 'good');
+      }
       function renderPickerSettings() {
         const picker = sidebarState.picker || {};
-        const pickerKeyInput = document.getElementById('picker-key-input');
-        const pickerProjectInput = document.getElementById('picker-project-input');
-        const pickFolderButton = document.getElementById('pick-folder-button');
-
-        if (picker.source === 'user') {
-          pickerKeyInput.value = picker.developerKey || '';
-          pickerProjectInput.value = picker.cloudProjectNumber || '';
-        } else if (!picker.hasUserCredentials) {
-          pickerKeyInput.value = '';
-          pickerProjectInput.value = '';
-        }
-
-        pickFolderButton.textContent = picker.configured ?
-          'Open Drive Folder Picker' :
-          'Picker Requires Credentials';
+        if (picker.source === 'user') { document.getElementById('picker-key-input').value = picker.developerKey || ''; document.getElementById('picker-project-input').value = picker.cloudProjectNumber || ''; }
       }
-
       function renderRunState() {
         const run = sidebarState.run || {};
-        const progressFill = document.getElementById('progress-fill');
-        const progressLabel = document.getElementById('progress-label');
-        const progressPercent = document.getElementById('progress-percent');
-        const statusMessage = document.getElementById('status-message');
-        const runPills = document.getElementById('run-pills');
-        const resumeButton = document.getElementById('resume-button');
-        const clearRunButton = document.getElementById('clear-run-button');
-        const diagnosticRow = document.getElementById('diagnostic-row');
-        const diagnosticLink = document.getElementById('diagnostic-link');
-
         document.getElementById('metric-processed').textContent = String(run.processedCount || 0);
         document.getElementById('metric-remaining').textContent = String(run.remainingCount || 0);
+        document.getElementById('metric-described').textContent = String(run.describedCount || 0);
         document.getElementById('metric-inserted').textContent = String(run.insertedCount || 0);
-        document.getElementById('metric-removed').textContent = String(run.removedCount || 0);
-
-        progressLabel.textContent = buildProgressLabel(run);
-        progressPercent.textContent = String(run.progressPercent || 0) + '%';
-        progressFill.className = 'progress-fill';
-        progressFill.style.width = String(run.progressPercent || 0) + '%';
-
-        if (run.phase === 'remove' && run.status !== 'complete' && run.status !== 'error') {
-          progressFill.className = 'progress-fill indeterminate';
-        }
-
-        statusMessage.textContent = run.message || 'Ready to choose a folder and start a report batch.';
-        statusMessage.className = 'status-message';
-
-        if (run.status === 'error' || run.localTone === 'error') {
-          statusMessage.classList.add('error');
-        } else if (run.limitReached || run.localTone === 'warn') {
-          statusMessage.classList.add('warn');
-        }
-
-        runPills.innerHTML = '';
-        appendPill(runPills, run.actionLabel || 'Idle', run.status === 'complete' ? 'good' : 'info');
-
-        if (run.totalCount) {
-          appendPill(
-              runPills,
-              String(run.processedCount || 0) + ' / ' + String(run.totalCount) + ' captions',
-              'info',
-          );
-        }
-
-        if (run.skippedCount) {
-          appendPill(runPills, String(run.skippedCount) + ' skipped', 'info');
-        }
-
-        if (run.missingNumbers && run.missingNumbers.length) {
-          appendPill(runPills, String(run.missingNumbers.length) + ' missing', 'warn');
-        }
-
-        if (run.duplicateFolderNumbers && run.duplicateFolderNumbers.length) {
-          appendPill(runPills, String(run.duplicateFolderNumbers.length) + ' duplicate folder numbers', 'warn');
-        }
-
-        if (run.limitReached) {
-          appendPill(runPills, 'Execution limit reached', 'warn');
-        }
-
-        resumeButton.classList.toggle('hidden', !run.canResume);
-        clearRunButton.classList.toggle('hidden', run.status === 'idle');
-        diagnosticRow.classList.toggle('hidden', !run.diagnosticLogUrl);
-
-        if (run.canResume) {
-          resumeButton.textContent = 'RESUME';
-        }
-
-        if (run.diagnosticLogUrl) {
-          diagnosticLink.href = run.diagnosticLogUrl;
-        }
-
-        updateActionButtons(run);
-        maybeContinueRun(run);
+        const fill = document.getElementById('progress-fill');
+        fill.className = 'progress-fill'; fill.style.width = String(run.progressPercent || 0) + '%';
+        if ((run.phase === 'remove') && run.status !== 'complete' && run.status !== 'error') { fill.className = 'progress-fill indeterminate'; }
+        document.getElementById('progress-label').textContent = buildProgressLabel(run);
+        document.getElementById('progress-percent').textContent = String(run.progressPercent || 0) + '%';
+        const status = document.getElementById('status-message'); status.textContent = run.message || 'Ready.'; status.className = 'status';
+        if (run.status === 'error' || run.localTone === 'error') { status.classList.add('error'); } else if (run.limitReached || run.localTone === 'warn') { status.classList.add('warn'); }
+        const pills = document.getElementById('run-pills'); pills.innerHTML = ''; appendPill(pills, run.actionLabel || 'Idle', run.status === 'complete' ? 'good' : 'info');
+        if (run.missingNumbers && run.missingNumbers.length) { appendPill(pills, String(run.missingNumbers.length) + ' missing', 'warn'); }
+        if (run.duplicateFolderNumbers && run.duplicateFolderNumbers.length) { appendPill(pills, String(run.duplicateFolderNumbers.length) + ' duplicates', 'warn'); }
+        document.getElementById('resume-button').classList.toggle('hidden', !run.canResume);
+        document.getElementById('clear-run-button').classList.toggle('hidden', run.status === 'idle');
+        document.getElementById('diagnostic-row').classList.toggle('hidden', !run.diagnosticLogUrl);
+        if (run.diagnosticLogUrl) { document.getElementById('diagnostic-link').href = run.diagnosticLogUrl; }
+        updateActionButtons(run); maybeContinueRun(run);
       }
-
-      function renderConsole() {
-        const consoleLog = document.getElementById('console-log');
-        const run = sidebarState.run || {};
-        const lines = Array.isArray(run.consoleLines) ? run.consoleLines : [];
-
-        consoleLog.innerHTML = '';
-
-        if (!lines.length) {
-          consoleLog.textContent = '[idle] Waiting for the next run.';
-          return;
-        }
-
-        for (const line of lines) {
-          const div = document.createElement('div');
-          div.className = 'console-line';
-          div.textContent = line;
-          consoleLog.appendChild(div);
-        }
-
-        consoleLog.scrollTop = consoleLog.scrollHeight;
-      }
-
-      function renderDiagnostics() {
-        const errorList = document.getElementById('error-list');
-        const run = sidebarState.run || {};
-
-        errorList.innerHTML = '';
-        if (run.errors && run.errors.length) {
-          for (const errorMessage of run.errors.slice(0, 8)) {
-            const item = document.createElement('li');
-            item.textContent = errorMessage;
-            errorList.appendChild(item);
-          }
-          return;
-        }
-
-        const item = document.createElement('li');
-        item.textContent = 'No current errors.';
-        errorList.appendChild(item);
-      }
-
-      function updateActionButtons(run) {
-        const folderReady = Boolean(sidebarState.folder && sidebarState.folder.id && !sidebarState.folder.invalid);
-        const isBusy = run.status === 'running';
-        const resumeButton = document.getElementById('resume-button');
-        const clearRunButton = document.getElementById('clear-run-button');
-
-        document.getElementById('insert-button').disabled = !folderReady || isBusy;
-        document.getElementById('rebuild-button').disabled = !folderReady || isBusy;
-        document.getElementById('save-folder-button').disabled = isBusy;
-        document.getElementById('pick-folder-button').disabled = isBusy;
-        document.getElementById('save-picker-button').disabled = isBusy;
-        document.getElementById('clear-picker-button').disabled = isBusy;
-        resumeButton.disabled = isBusy || !run.canResume;
-        clearRunButton.disabled = isBusy;
-      }
-
-      function buildProgressLabel(run) {
-        if (run.phase === 'remove' && run.status !== 'complete' && run.status !== 'error') {
-          return 'Clearing old managed images';
-        }
-
-        if (run.totalCount) {
-          return 'Processing ' + String(run.processedCount || 0) + ' of ' + String(run.totalCount);
-        }
-
-        return 'Ready';
-      }
-
-      function appendPill(container, text, tone) {
-        const pill = document.createElement('span');
-        pill.className = 'pill' + (tone ? ' ' + tone : '');
-        pill.textContent = text;
-        container.appendChild(pill);
-      }
-
-      function schedulePoll() {
-        if (pollTimer) {
-          return;
-        }
-
-        pollTimer = window.setTimeout(function() {
-          pollTimer = null;
-          if (pollInFlight) {
-            schedulePoll();
-            return;
-          }
-          refreshSidebarState();
-        }, POLL_INTERVAL_MS);
-      }
-
-      function clearPollTimer() {
-        if (!pollTimer) {
-          return;
-        }
-
-        window.clearTimeout(pollTimer);
-        pollTimer = null;
-      }
-
-      function refreshSidebarState() {
-        clearPollTimer();
-        pollInFlight = true;
-
-        google.script.run
-            .withSuccessHandler(function(model) {
-              pollInFlight = false;
-              sidebarState = model;
-              render();
-              maybeStartRequestedAction();
-            })
-            .withFailureHandler(function(error) {
-              pollInFlight = false;
-              handleServerFailure(error);
-            })
-            .getSidebarState();
-      }
-
-      function maybeStartRequestedAction() {
-        if (!requestedAction) {
-          return;
-        }
-
-        const nextAction = requestedAction;
-        requestedAction = '';
-
-        if (nextAction === 'insert' || nextAction === 'rebuild') {
-          startRun(nextAction);
-          return;
-        }
-
-        if (nextAction === 'folder') {
-          chooseFolderWithPicker();
-        }
-      }
-
-      function chooseFolderWithPicker() {
-        const picker = sidebarState.picker || {};
-        if (!picker.configured) {
-          setLocalStatus(
-              'Google Picker is not configured for this copy yet. Use the manual folder field below or save your Picker credentials first.',
-              'warn',
-          );
-          document.getElementById('manual-folder-input').focus();
-          return;
-        }
-
-        google.script.run
-            .withSuccessHandler(function() {
-              setLocalStatus('Folder picker opened. Select a Drive folder in the dialog.', '');
-            })
-            .withFailureHandler(handleServerFailure)
-            .openPickerDialog();
-      }
-
-      function saveFolderInput() {
-        const input = document.getElementById('manual-folder-input').value;
-
-        google.script.run
-            .withSuccessHandler(function(model) {
-              sidebarState = model;
-              document.getElementById('manual-folder-input').value = '';
-              render();
-              setLocalStatus('Folder saved: ' + model.folder.name, '');
-            })
-            .withFailureHandler(handleServerFailure)
-            .saveFolderInput(input);
-      }
-
-      function savePickerSettings() {
-        const apiKey = document.getElementById('picker-key-input').value;
-        const projectNumber = document.getElementById('picker-project-input').value;
-
-        google.script.run
-            .withSuccessHandler(function(pickerState) {
-              sidebarState.picker = pickerState;
-              renderPickerSettings();
-              renderFolder();
-              setLocalStatus('Picker credentials saved to your user profile.', '');
-            })
-            .withFailureHandler(handleServerFailure)
-            .savePickerCredentials(apiKey, projectNumber);
-      }
-
-      function clearPickerSettings() {
-        google.script.run
-            .withSuccessHandler(function(pickerState) {
-              sidebarState.picker = pickerState;
-              document.getElementById('picker-key-input').value = '';
-              document.getElementById('picker-project-input').value = '';
-              renderPickerSettings();
-              renderFolder();
-              setLocalStatus('User-scoped Picker credentials cleared.', '');
-            })
-            .withFailureHandler(handleServerFailure)
-            .clearPickerCredentials();
-      }
-
-      function startRun(action) {
-        clearAutoContinueTimer();
-
-        if (!sidebarState.folder || !sidebarState.folder.id || sidebarState.folder.invalid) {
-          setLocalStatus('Choose a valid Drive folder before starting a run.', 'warn');
-          return;
-        }
-
-        setLocalStatus('Starting ' + actionLabel(action) + '...', '');
-
-        google.script.run
-            .withSuccessHandler(function(runState) {
-              sidebarState.run = runState;
-              renderRunState();
-              renderConsole();
-              renderDiagnostics();
-            })
-            .withFailureHandler(handleServerFailure)
-            .startPhotoReportRun(action);
-      }
-
-      function resumeRun() {
-        clearAutoContinueTimer();
-        setLocalStatus('Resuming the next batch...', '');
-
-        google.script.run
-            .withSuccessHandler(function(runState) {
-              sidebarState.run = runState;
-              renderRunState();
-              renderConsole();
-              renderDiagnostics();
-            })
-            .withFailureHandler(handleServerFailure)
-            .resumePhotoReportRun();
-      }
-
-      function clearRunStatus() {
-        clearAutoContinueTimer();
-
-        google.script.run
-            .withSuccessHandler(function(runState) {
-              sidebarState.run = runState;
-              renderRunState();
-              renderConsole();
-              renderDiagnostics();
-            })
-            .withFailureHandler(handleServerFailure)
-            .clearPhotoReportRun();
-      }
-
-      function maybeContinueRun(run) {
-        clearAutoContinueTimer();
-
-        if (!run || !run.needsContinuation) {
-          return;
-        }
-
-        if (run.limitReached) {
-          return;
-        }
-
-        autoContinueTimer = window.setTimeout(function() {
-          resumeRun();
-        }, CONTINUE_DELAY_MS);
-      }
-
-      function clearAutoContinueTimer() {
-        if (!autoContinueTimer) {
-          return;
-        }
-
-        window.clearTimeout(autoContinueTimer);
-        autoContinueTimer = null;
-      }
-
-      function setLocalStatus(message, tone) {
-        const run = Object.assign({}, sidebarState.run || {});
-        run.message = message;
-        run.localTone = tone || '';
-        sidebarState.run = Object.assign(
-            {
-              action: run.action || '',
-              actionLabel: run.actionLabel || '',
-              status: run.status || 'idle',
-              phase: run.phase || 'idle',
-              folderName: run.folderName || '',
-              totalCount: run.totalCount || 0,
-              processedCount: run.processedCount || 0,
-              remainingCount: run.remainingCount || 0,
-              progressPercent: run.progressPercent || 0,
-              insertedCount: run.insertedCount || 0,
-              removedCount: run.removedCount || 0,
-              skippedCount: run.skippedCount || 0,
-              missingNumbers: run.missingNumbers || [],
-              duplicateFolderNumbers: run.duplicateFolderNumbers || [],
-              errors: run.errors || [],
-              consoleLines: run.consoleLines || [],
-              limitReached: run.limitReached || false,
-              needsContinuation: run.needsContinuation || false,
-              canResume: run.canResume || false,
-              message: run.message || '',
-              startedAt: run.startedAt || '',
-              updatedAt: run.updatedAt || '',
-              diagnosticLogUrl: run.diagnosticLogUrl || '',
-            },
-            run,
-        );
-        renderRunState();
-      }
-
-      function actionLabel(action) {
-        return action === 'rebuild' ? 'Rebuild Images' : 'Insert Missing Images';
-      }
-
-      function handleServerFailure(error) {
-        const message = error && error.message ? error.message : String(error);
-        clearAutoContinueTimer();
-        setLocalStatus(message, 'error');
-      }
-
+      function renderConsole() { const lines = ((sidebarState.run || {}).consoleLines || []); const box = document.getElementById('console-log'); box.textContent = lines.length ? lines.join('\n') : '[idle] Waiting for the next run.'; box.scrollTop = box.scrollHeight; }
+      function renderDiagnostics() { const list = document.getElementById('error-list'); const errors = ((sidebarState.run || {}).errors || []); list.innerHTML = ''; (errors.length ? errors.slice(0,8) : ['No current errors.']).forEach(function(text){ const item = document.createElement('li'); item.textContent = text; list.appendChild(item); }); }
+      function updateActionButtons(run) { const sheetReady = Boolean(sidebarState.sheet && sidebarState.sheet.id && !sidebarState.sheet.invalid); const folderReady = Boolean(sidebarState.folder && sidebarState.folder.id && !sidebarState.folder.invalid); const busy = run.status === 'running'; ['save-folder-button','pick-folder-button','save-sheet-button','pick-sheet-button','create-sheet-button','init-sheet-button','save-picker-button','clear-picker-button'].forEach(function(id){ document.getElementById(id).disabled = busy; }); document.getElementById('describe-button').disabled = !sheetReady || busy; document.getElementById('insert-button').disabled = !sheetReady || !folderReady || busy; document.getElementById('rebuild-button').disabled = !sheetReady || !folderReady || busy; document.getElementById('resume-button').disabled = busy || !run.canResume; document.getElementById('clear-run-button').disabled = busy; }
+      function buildProgressLabel(run) { if (run.phase === 'describe') return 'Generating descriptions'; if (run.phase === 'remove') return 'Clearing managed blocks'; if (run.totalCount) return 'Processing ' + String(run.processedCount || 0) + ' of ' + String(run.totalCount); return 'Ready'; }
+      function appendPill(container, text, tone) { const pill = document.createElement('span'); pill.className = 'pill' + (tone ? ' ' + tone : ''); pill.textContent = text; container.appendChild(pill); }
+      function schedulePoll() { if (pollTimer) return; pollTimer = window.setTimeout(function(){ pollTimer = null; if (pollInFlight) { schedulePoll(); return; } refreshSidebarState(); }, POLL_INTERVAL_MS); }
+      function clearPollTimer() { if (pollTimer) { window.clearTimeout(pollTimer); pollTimer = null; } }
+      function refreshSidebarState() { clearPollTimer(); pollInFlight = true; google.script.run.withSuccessHandler(function(model){ pollInFlight = false; sidebarState = model; render(); maybeStartRequestedAction(); }).withFailureHandler(function(error){ pollInFlight = false; handleServerFailure(error); }).getSidebarState(); }
+      function maybeStartRequestedAction() { if (!requestedAction) return; const action = requestedAction; requestedAction = ''; if (['describe','insert','rebuild'].indexOf(action) !== -1) startRun(action); }
+      function chooseFolderWithPicker() { google.script.run.withSuccessHandler(function(){ setLocalStatus('Folder picker opened.', ''); }).withFailureHandler(handleServerFailure).openPickerDialog(); }
+      function chooseSheetWithPicker() { google.script.run.withSuccessHandler(function(){ setLocalStatus('Sheet picker opened.', ''); }).withFailureHandler(handleServerFailure).openSheetPickerDialog(); }
+      function saveFolderInput() { google.script.run.withSuccessHandler(function(model){ sidebarState = model; document.getElementById('manual-folder-input').value = ''; render(); }).withFailureHandler(handleServerFailure).saveFolderInput(document.getElementById('manual-folder-input').value); }
+      function saveSheetInput() { google.script.run.withSuccessHandler(function(model){ sidebarState = model; document.getElementById('manual-sheet-input').value = ''; render(); }).withFailureHandler(handleServerFailure).saveSheetInput(document.getElementById('manual-sheet-input').value); }
+      function createSheet() { google.script.run.withSuccessHandler(function(model){ sidebarState = model; render(); }).withFailureHandler(handleServerFailure).createAndLinkSurveySheet(); }
+      function initializeSheet() { google.script.run.withSuccessHandler(function(){ setLocalStatus('Survey Sheet initialized.', ''); refreshSidebarState(); }).withFailureHandler(handleServerFailure).initializeSurveySheet(); }
+      function savePickerSettings() { google.script.run.withSuccessHandler(function(picker){ sidebarState.picker = picker; render(); }).withFailureHandler(handleServerFailure).savePickerCredentials(document.getElementById('picker-key-input').value, document.getElementById('picker-project-input').value); }
+      function clearPickerSettings() { google.script.run.withSuccessHandler(function(picker){ sidebarState.picker = picker; document.getElementById('picker-key-input').value = ''; document.getElementById('picker-project-input').value = ''; render(); }).withFailureHandler(handleServerFailure).clearPickerCredentials(); }
+      function startRun(action) { clearAutoContinueTimer(); setLocalStatus('Starting ' + action + '...', ''); google.script.run.withSuccessHandler(function(run){ sidebarState.run = run; renderRunState(); renderConsole(); renderDiagnostics(); }).withFailureHandler(handleServerFailure).startPhotoReportRun(action); }
+      function resumeRun() { clearAutoContinueTimer(); google.script.run.withSuccessHandler(function(run){ sidebarState.run = run; renderRunState(); renderConsole(); renderDiagnostics(); }).withFailureHandler(handleServerFailure).resumePhotoReportRun(); }
+      function clearRunStatus() { clearAutoContinueTimer(); google.script.run.withSuccessHandler(function(run){ sidebarState.run = run; renderRunState(); renderConsole(); renderDiagnostics(); }).withFailureHandler(handleServerFailure).clearPhotoReportRun(); }
+      function maybeContinueRun(run) { clearAutoContinueTimer(); if (!run || !run.needsContinuation || run.limitReached) return; autoContinueTimer = window.setTimeout(resumeRun, CONTINUE_DELAY_MS); }
+      function clearAutoContinueTimer() { if (autoContinueTimer) { window.clearTimeout(autoContinueTimer); autoContinueTimer = null; } }
+      function setLocalStatus(message, tone) { const run = Object.assign({}, sidebarState.run || {}, {message: message, localTone: tone || ''}); sidebarState.run = run; renderRunState(); }
+      function handleServerFailure(error) { clearAutoContinueTimer(); setLocalStatus(error && error.message ? error.message : String(error), 'error'); }
       window.addEventListener('load', initializeSidebar);
-      window.addEventListener('beforeunload', function() {
-        clearAutoContinueTimer();
-        clearPollTimer();
-      });
+      window.addEventListener('beforeunload', function(){ clearAutoContinueTimer(); clearPollTimer(); });
     </script>
   </body>
 </html>

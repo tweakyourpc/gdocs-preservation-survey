@@ -1,0 +1,41 @@
+name: Push Apps Script
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**.gs"
+      - "**.html"
+
+permissions:
+  contents: read
+
+jobs:
+  push:
+    name: clasp push
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Write clasp credentials
+        run: printf '%s' "$CLASP_TOKEN" > "$HOME/.clasprc.json"
+        env:
+          CLASP_TOKEN: ${{ secrets.CLASP_TOKEN }}
+
+      # Generate CLASP_TOKEN with:
+      # npx clasp login --no-localhost
+      # Then copy ~/.clasprc.json and paste its full JSON contents into the GitHub secret.
+      - name: Push Apps Script project
+        run: npm run push
