@@ -1,5 +1,7 @@
 # gdocs-preservation-survey
 
+![gdocs-preservation-survey banner](assets/gdocs-preservation-survey-banner.png)
+
 Historic Preservation Field Survey is a Google Apps Script fork of `gdocs-photo-report` for deterministic SHPO-style field survey documentation in Google Docs. It uses a structured Google Sheet, controlled dropdown vocabularies, numbered Drive photos, and resumable Apps Script batches. No AI or LLM calls are used in v1.
 
 ## What It Does
